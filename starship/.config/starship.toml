@@ -1,0 +1,192 @@
+# Starship prompt: Tokyo Night colors, text + Nerd Font icons.
+# Tested against starship 1.22.1 (Debian 13) and Ubuntu 26.04's package.
+#
+# Line 1 left:  os, user@host, directory, git
+# Line 1 right: containers/k8s, language envs, memory, jobs, duration, exit status, clock
+# Line 2:       input arrow (green = last command ok, red = failed)
+#
+# Icons are written as \u escapes so they survive copy/paste. Look any of them
+# up at https://www.nerdfonts.com/cheat-sheet
+
+add_newline = true
+
+format = """
+$os\
+$container\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$fill\
+$docker_context\
+$kubernetes\
+$python\
+$golang\
+$rust\
+$nodejs\
+$memory_usage\
+$jobs\
+$cmd_duration\
+$status\
+$time\
+$line_break\
+$sudo\
+$character"""
+
+# ---------------------------------------------------------------- identity
+
+[os]
+disabled = false
+style = "#c0caf5"
+format = '[$symbol]($style)'
+
+[os.symbols]
+Debian = " "
+Ubuntu = " "
+Macos = " "
+Linux = " "
+
+[container]
+symbol = " "
+style = "bold #ff9e64"
+format = '[$symbol\[$name\]]($style) '
+
+[username]
+show_always = true
+style_user = "bold #7aa2f7"
+style_root = "bold #f7768e"
+format = '[$user]($style)'
+
+[hostname]
+ssh_only = false
+style = "bold #7dcfff"
+format = '[@](#565f89)[$hostname]($style) '
+
+[directory]
+style = "bold #bb9af7"
+truncation_length = 4
+truncation_symbol = "…/"
+read_only = " "
+read_only_style = "#f7768e"
+format = "in [ $path]($style)[$read_only]($read_only_style) "
+
+# ---------------------------------------------------------------- git
+
+[git_branch]
+symbol = " "
+style = "bold #9ece6a"
+format = 'on [$symbol$branch]($style) '
+
+[git_commit]
+tag_symbol = "  "
+tag_disabled = false
+style = "bold #7dcfff"
+
+[git_state]
+style = "bold #ff9e64"
+
+[git_status]
+style = "bold #e0af68"
+format = '([$all_status$ahead_behind]($style) )'
+conflicted = '=${count}'
+stashed = '≡${count}'
+deleted = '✘${count}'
+renamed = '»${count}'
+modified = '!${count}'
+staged = '+${count}'
+untracked = '?${count}'
+ahead = '⇡${count}'
+behind = '⇣${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+
+# ---------------------------------------------------------------- right side
+
+[fill]
+symbol = " "
+
+# Only shows inside a directory with a Dockerfile/compose file and a non-default context
+[docker_context]
+symbol = " "
+style = "bold #2ac3de"
+format = 'via [$symbol$context]($style) '
+
+# Only shows when a kubeconfig with a current-context exists
+[kubernetes]
+disabled = false
+symbol = "☸ "
+style = "bold #7aa2f7"
+format = '[$symbol$context( \($namespace\))]($style) '
+
+[python]
+symbol = " "
+style = "#e0af68"
+
+[golang]
+symbol = " "
+style = "bold #7dcfff"
+
+[rust]
+symbol = " "
+style = "bold #ff9e64"
+
+[nodejs]
+symbol = " "
+style = "bold #9ece6a"
+
+# Only shows when RAM use is above the threshold (percent)
+[memory_usage]
+disabled = false
+threshold = 75
+symbol = " "
+style = "bold #ff9e64"
+format = '[$symbol$ram_pct]($style) '
+
+# Background jobs (Ctrl-Z / &), shows the count from 1 up
+[jobs]
+symbol = " "
+style = "bold #bb9af7"
+number_threshold = 1
+format = '[$symbol$number]($style) '
+
+[cmd_duration]
+min_time = 2000
+style = "#e0af68"
+format = "took [ $duration]($style) "
+
+# Exit code of the last command, only when it's non-zero.
+# pipestatus shows each stage of a failed pipeline, e.g. [0|1] => 1
+[status]
+disabled = false
+symbol = " "
+style = "bold #f7768e"
+pipestatus = true
+pipestatus_separator = '|'
+pipestatus_segment_format = '[$status]($style)'
+pipestatus_format = '\[$pipestatus\] => [$symbol$status( $common_meaning)( $signal_name)]($style) '
+format = '[$symbol$status( $common_meaning)( $signal_name)]($style) '
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "#565f89"
+format = "[ $time]($style)"
+
+# ---------------------------------------------------------------- line 2
+
+# OFF on purpose. Starship checks this by running `sudo -n true` before
+# every prompt, and sudo logs each run to the auth log / journal. On a
+# detection lab box that's a stream of junk sudo events in your data.
+# Flip to false only on machines whose logs you don't care about.
+[sudo]
+disabled = true
+symbol = " "
+style = "bold #ff9e64"
+format = '[$symbol]($style)'
+
+[character]
+success_symbol = '[❯](bold #9ece6a)'
+error_symbol = '[❯](bold #f7768e)'
+vimcmd_symbol = '[❮](bold #7aa2f7)'
