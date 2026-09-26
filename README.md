@@ -14,7 +14,7 @@ On the box:
 
 ```
 sudo apt update && sudo apt install --yes zsh zsh-autosuggestions zsh-syntax-highlighting starship fzf tmux eza bat stow git ncurses-term
-git clone https://github.com/verdantpro/dotfiles.git "$HOME/dotfiles"
+git clone https://github.com/verdantpro/deth_dotfiles.git "$HOME/dotfiles"
 stow --dir="$HOME/dotfiles" --target="$HOME" --no-folding --verbose zsh starship tmux
 mkdir --parents "$HOME/.local/bin" && ln --symbolic /usr/bin/batcat "$HOME/.local/bin/bat"
 chsh --shell /usr/bin/zsh
